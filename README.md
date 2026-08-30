@@ -6,13 +6,15 @@ This project is an end-to-end machine learning pipeline designed to detect corpo
 In real-world financial systems, black-box neural networks are often insufficient because auditors and managers need to know why a transaction was blocked. This repository solves that by combining a PyTorch Deep Learning classifier (optimized for highly imbalanced datasets) with the Google Gemini API to generate human-readable, business-contextualized fraud analysis reports (Explainable AI - XAI).
 
 ## Architecture & Workflow
+### Before you continue, it`s mandatory to understand that the entire dataset is sintetic with a semi-realistic normal-case to fraud-case imbalance
+
 **Synthetic Fraud Injection:** Injects realistic fraud patterns (Smurfing, Out-of-Hours anomalies, Policy Violations via Z-Score, and Shell Merchant Collusion) into a clean corporate dataset, creating a realistic ~2.4% fraud imbalance.
 
-**Feature Engineering:** Applies Cyclical Encoding (Sine/Cosine) for temporal data, Z-score calculations based on department averages, and One-Hot Encoding for categorical variables.
+**Feature Engineering:** Makes temporal data Cyclical (Sine/Cosine), Z-score calculations based on department averages (without separating transaction per month, a way to simplify the code), and One-Hot Encoding for categorical variables.
 
 **Deep Learning Classification:** A Feed-Forward Neural Network built with PyTorch. It uses BCEWithLogitsLoss with a calculated positive weight (pos_weight) to heavily penalize missed frauds, bypassing the need for synthetic oversampling (like SMOTE).
 
-**Explainable AI (XAI):** Anomalous tensors predicted as fraud are parsed and sent to the Gemini LLM, which acts as a virtual fraud analyst to explain the mathematical anomalies in plain business English.
+**Explainable AI (XAI):** Anomalous tensors predicted as fraud are parsed and sent to the Gemini LLM, which explain the mathematical anomalies in plain English.
 
 
 ## Model Performance & Business Metrics
@@ -34,7 +36,7 @@ F1-Score: 0.2127
  [   31   364]]  <-- [False Negatives, True Positives]
  ```
 ## Explainable AI (XAI) Output Examples
-When the PyTorch model flags a transaction (Prediction = 1.0), the data is routed to the Gemini API for contextual analysis.
+When the PyTorch model flags a transaction (Prediction = 1.0), the data is routed to the Gemini API, as a dictionary, for contextual analysis.
 
 Note: Two additional generated case explanations will be added shortly to this documentation.
 
