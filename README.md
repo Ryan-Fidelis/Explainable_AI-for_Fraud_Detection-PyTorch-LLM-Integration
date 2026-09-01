@@ -38,8 +38,6 @@ F1-Score: 0.2127
 ## Explainable AI (XAI) Output Examples
 When the PyTorch model flags a transaction (Prediction = 1.0), the data is routed to the Gemini API, as a dictionary, for contextual analysis.
 
-Note: Two additional generated case explanations will be added shortly to this documentation.
-
 ```Plaintext
 --- GEMINI FRAUD ANALYSIS ---
 ### **FRAUD ALERT: High Probability (Score: 1.0)**
@@ -68,6 +66,75 @@ Note: Two additional generated case explanations will be added shortly to this d
 #### **3. Recommended Action**
 * **Immediate Action:** Freeze transaction settlement / place temporary hold on card.
 * **Audit Request:** Flag transaction to the employee's direct supervisor to submit itemized receipts and business justification within 24 hours.
+========================================
+
+--- GEMINI FRAUD ANALYSIS ---
+**FRAUD ALERT ANALYSIS REPORT**
+
+**Likely Fraud Type:** **Unauthorized Personal Expense / Corporate Card Misuse**
+**Model Confidence:** High (Prediction: 1.0)
+
+---
+
+### **Executive Summary**
+This transaction exhibits key indicators of unauthorized personal expenditure by a low-level employee. The combination of a non-business merchant category, weekend timing, and a low transaction value suggests potential policy violation or intentional misuse of corporate funds.
+
+---
+
+### **Key Data Justifications**
+
+1. **Non-Compliant Merchant Category:**
+   * **`Category_Health & Beauty: 1.0`** — Expenses in personal care/beauty rarely serve a legitimate corporate purpose, contrasting with standard business categories (e.g., IT, Services, Travel).
+
+2. **User Profile & Authorization Risk:**
+   * **`Role_Level_Júnior: 1.0`** — Junior-level employees typically have restricted spending privileges and lower policy thresholds, making personal expense claims higher risk for compliance.
+
+3. **Off-Hours / Weekend Timing:**
+   * **`day_sin: -0.7818` / `day_cos: 0.6235`** — Cyclical features map to a weekend/non-business day, indicating the transaction occurred outside normal operating hours.
+
+4. **Micro-Spending Pattern:**
+   * **`amount_z_score: -0.9266`** — Transaction amount is significantly below average. This low-value profile is characteristic of policy-testing ("flying under the radar") or casual personal charges aimed at avoiding manager approval limits.
+
+---
+
+### **Recommended Action**
+* **Flag for Audit:** Request itemized receipt and business justification from the employee.
+* **Temporary Restriction:** Restrict corporate card use for non-standard categories pending review.
+========================================
+
+--- GEMINI FRAUD ANALYSIS ---
+### **FRAUD ALERT ANALYSIS REPORT**
+
+**Likely Fraud Type:** **Personal Expense Misappropriation / Out-of-Hours Policy Breach**
+
+---
+
+### **Executive Summary**
+The model has flagged this transaction due to a combination of **non-compliant merchant categorization**, **anomalous transaction timing**, and an **elevated spend amount** associated with a mid-level staff role (*Pleno*).
+
+---
+
+### **Key Risk Indicators & Data Justification**
+
+1. **Non-Standard Merchant Category (`Category_Health & Beauty = 1.0`)**
+   * **Analysis:** The purchase was made under *Health & Beauty*, a category with no obvious connection to standard corporate procurement or operational needs.
+   * **Risk:** High probability of personal misuse of corporate funds or purchasing cards.
+
+2. **Temporal Anomaly (Weekend & Early Morning)**
+   * **Analysis:**
+     * `day_sin/cos` values (`-0.7818`, `0.6234`) indicate a **weekend** transaction.
+     * `hour_sin/cos` values (`0.9659`, `-0.2588`) map to approximately **07:00 AM**.
+   * **Risk:** High correlation with non-working-hour personal activity rather than legitimate business travel or emergency operations.
+
+3. **Role Level vs. Spend Amount (`amount_z_score = 0.5613`, `Role_Level_Pleno = 1.0`)**
+   * **Analysis:** The transaction amount is above average ($z\text{-score} > 0.5$) for a mid-level (*Pleno*) employee baseline.
+   * **Risk:** Spending exceeds normal operational thresholds for mid-level discretionary authorization without explicit pre-approval.
+
+---
+
+### **Recommended Action**
+* **Status:** **HOLD / REJECT**
+* **Action:** Request itemized tax receipts and explicit business justification from the employee and their line manager before clearing the disbursement.
 ========================================
 ```
 # How to Run Locally
